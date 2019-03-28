@@ -1,0 +1,4 @@
+amazon.in
+flipkart.com
+google.com
+gmail.com

@@ -1,0 +1,30 @@
+from sklearn.datasets import fetch_mldata
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
+
+
+mnist = fetch_mldata('MNIST original')
+# test_size: what proportion of original data is used for test set
+train_img, test_img, train_lbl, test_lbl = train_test_split( mnist.data, mnist.target, test_size=1/7.0, random_state=0)
+scaler = StandardScaler()
+
+# Fit on training set only.
+scaler.fit(train_img)
+
+# Apply transform to both the training set and the test set.
+train_img = scaler.transform(train_img)
+test_img = scaler.transform(test_img)
+
+pca = PCA(.95)
+pca.fit(train_img)
+train_img = pca.transform(train_img)
+test_img = pca.transform(test_img)
+# all parameters not specified are set to their defaults
+# default solver is incredibly slow which is why it was changed to 'lbfgs'
+logisticRegr = LogisticRegression(solver = 'lbfgs')
+logisticRegr.fit(train_img, train_lbl)
+logisticRegr.predict(test_img[0].reshape(1,-1))
+logisticRegr.score(test_img, test_lbl)
+
